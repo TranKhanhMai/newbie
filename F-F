@@ -1,0 +1,462 @@
+getgenv().autofarm = true 
+getgenv().killaura = true 
+getgenv().autoquest = true 
+local npcTable = {}
+local areaTable = {}
+local mobTable = {
+
+"AHero",
+
+"AVil",
+
+"All Might",
+"All for One",
+
+"Bandit",
+
+
+"BHero",
+   
+    "BVil",
+  
+   "CHero",
+
+"CVil",
+
+"Criminal",
+"Civilian",
+"Deku",
+"Dabi",
+"Escapees",
+"Eraser",
+"HighCivilian",
+"LBandit",
+"Police",
+"Nomu",
+"Present Mic",
+"Mirio",
+"MiniNomu"
+,"Lumberjack",
+"Prison Guard",
+"Prisoner",
+"Prison Boss",
+"SHero",
+"SVil",
+"Stain",
+"Todoroki",
+"Uraraka",
+"UATrainee",
+"Toru Hagakure",
+"Tomura",
+
+
+
+
+
+
+}
+local activeCodes = {
+
+ }
+ local questTable = {
+
+
+
+
+ }
+local weaponTable = {
+"Karate",
+"Basic Combat",
+"Scythe",
+"Steel Katana",
+"Lightning Bolt",
+"Cement",
+"Zero Gravity",
+"Decay",
+"Erasure",
+"HCHH",
+"OFA",
+"Explosion",
+"Ice","Air Propulsion",
+"Invisibility",
+"Gigantification",
+"Hardening",
+"Naval Laser",
+"Super Strength",
+"Heal",
+
+
+
+}
+
+
+
+for i,v in pairs(workspace.NPCs:GetChildren()) do 
+
+    if v:IsA("Model") then 
+
+table.insert(npcTable, v.Name)
+
+
+    end
+end
+
+
+
+for i,v in pairs(workspace.Map.AreasOfImportance:GetChildren()) do 
+
+    if v:IsA("Model") then 
+
+table.insert(areaTable, v.Name)
+
+
+    end
+end
+
+
+for i,v in pairs(game:GetService("ReplicatedStorage").Codes:GetChildren()) do 
+
+    if v:IsA("Folder") then 
+
+table.insert(activeCodes, v.Name)
+
+
+    end
+end
+
+for i,v in pairs(workspace.QuestGivers:GetChildren()) do 
+
+    if v:IsA("Model") then 
+
+table.insert(questTable, v.Name)
+
+
+    end
+end
+
+
+
+
+
+
+
+local function redeem()
+
+     local amount = 1500
+     
+     for _, code in ipairs(activeCodes) do
+         for i = 1, amount do
+             task.spawn(function()
+          
+     game:GetService("ReplicatedStorage"):WaitForChild("codes"):FireServer(code)
+     
+             end)
+         end
+     end
+     
+
+
+end
+
+
+local function autofarm()
+
+
+
+    for i  ,v in pairs(workspace.Characters:GetChildren()) do 
+
+        if  string.find(v.Name , mob) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and getgenv().autofarm == true  then 
+
+         if not game:GetService("Players").LocalPlayer.Quest.Complete.Value == true then
+            
+            
+            game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, weapons)
+    
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,position,0) * CFrame.Angles(math.rad(-90), 0, 0) 
+         
+        
+        elseif game:GetService("Players").LocalPlayer.Quest.Complete.Value == true then
+        
+            game.Players.LocalPlayer.Character:PivotTo(workspace.QuestGivers[quest]:GetPivot())
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.HoldDuration = 0
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.Exclusivity = "AlwaysShow"
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.RequiresLineOfSight = false 
+            workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt.MaxActivationDistance = 10
+            fireproximityprompt(workspace.QuestGivers[quest].HumanoidRootPart.ProximityPrompt, 1)
+
+        end
+
+
+break
+        end
+    end
+
+
+
+
+end
+
+
+local function killaura()
+    
+
+    game:GetService("ReplicatedStorage").Combat:FireServer(false, 1, nil, weapon2)
+  
+end
+
+
+local function autoquest()
+
+    game:GetService("ReplicatedStorage"):WaitForChild("questremote"):FireServer(quest)
+    
+
+
+end
+
+
+local function questp()
+
+    game.Players.LocalPlayer.Character:PivotTo(workspace.QuestGivers[quest]:GetPivot())
+
+
+
+    
+
+end
+
+
+local function npctp()
+
+
+
+    game.Players.LocalPlayer.Character:PivotTo(workspace.NPCs[npc]:GetPivot())
+
+
+end
+local function areatp()
+
+
+    game.Players.LocalPlayer.Character:PivotTo(workspace.Map.AreasOfImportance[area]:GetPivot())
+
+end
+
+
+
+--ui
+
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
+
+
+local GUI = Mercury:Create{
+    Name = "Heroes Awakening",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Dark,
+    Link = "discord.gg/macscripts"
+}
+
+GUI:Credit{
+	Name = "Mac#0014",
+	Description = "Scripter",
+	V3rm = "https://v3rmillion.net/member.php?action=profile&uid=1076851",
+	Discord = "Mac#0014"
+}
+
+
+
+GUI:Notification{
+	Title = "Join our discord!",
+	Text = "discord.gg/macscripts",
+	Duration = 20,
+	Callback = function() end
+}
+
+
+
+local Tab = GUI:Tab{
+	Name = "Autofarms",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+
+Tab:Toggle{
+	Name = "Mob Autofarm toggle ",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+getgenv().autofarm = state
+if getgenv().autofarm then 
+ 
+    farming = game:GetService("RunService").Heartbeat:connect(
+        function()
+            autofarm()
+        end
+    )
+    return
+    end
+    
+    farming:Disconnect()
+    
+    end
+}
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a mob ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = mobTable,
+
+	Callback = function(item) 
+        mob = item
+        return end
+}
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a weapon to farm with  ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = weaponTable,
+
+	Callback = function(item) 
+        weapons = item
+        return end
+}
+
+
+Tab:Slider{
+	Name = "Position",
+	Default = 5,
+	Min = -10,
+	Max = 10,
+	Callback = function(Value)
+ 
+position = Value
+
+
+    end
+}
+
+Tab:Toggle{
+	Name = "Autoquest toggle ",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state) 
+getgenv().autoquest = state
+if getgenv().autoquest then 
+ 
+    farming = game:GetService("RunService").Heartbeat:connect(
+        function()
+            autoquest()
+        end
+    )
+    return
+    end
+    
+    farming:Disconnect()
+    
+    end
+}
+
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a quest ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = questTable,
+
+	Callback = function(item) 
+        quest = item
+        return end
+}
+
+Tab:Button{
+	Name = "Teleport to quest npc ",
+	Description = nil,
+	Callback = function() 
+    
+    questp()
+
+    end
+}
+
+local Tab = GUI:Tab{
+	Name = "Teleports",
+	Icon = "rbxassetid://8569322835"
+}
+
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose an npc to tp to ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = npcTable,
+
+	Callback = function(item) 
+        npc = item
+        npctp()
+        return end
+}
+
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose an area to tp to ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = areaTable,
+
+	Callback = function(item) 
+    area = item
+        areatp()
+        return end
+}
+
+local Tab = GUI:Tab{
+	Name = "Misc",
+	Icon = "rbxassetid://8569322835"
+}
+Tab:Toggle{
+	Name = "Killaura toggle ",
+	StartingState = false,
+	Description = nil,
+	Callback = function(state)
+
+getgenv().killaura = state
+if getgenv().killaura then 
+ 
+    farming = game:GetService("RunService").Heartbeat:connect(
+        function()
+            killaura()
+        end
+    )
+    return
+    end
+    
+    farming:Disconnect()
+    
+    end
+}
+
+local MyDropdown = Tab:Dropdown{
+	Name = "Choose a weapon to farm with  ",
+	StartingText = "Select...",
+	Description = nil,
+	Items = weaponTable,
+
+	Callback = function(item) 
+        weapon2 = item
+        return end
+}
+
+Tab:Button{
+	Name = "Redeem all working codes",
+	Description = nil,
+	Callback = function() 
+    
+    redeem()
+
+    end
+}
